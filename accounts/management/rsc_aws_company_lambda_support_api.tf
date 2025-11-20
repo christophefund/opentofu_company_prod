@@ -79,11 +79,11 @@ module "iam_role_lambda_support_api" {
       }
     ]
   })
-
+/*
   additional_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
-
+*/
 }
 
 
@@ -91,3 +91,22 @@ module "iam_role_lambda_support_api" {
 # Create a Lambda function to open an AWS Support Ticket every time a new AWS
 # Account is created in order to enrol it with AWS Support
 #------------------------------------------------------------------------------
+module "lambda_support_api" {
+  # GENERAL
+  source        = "git@github.com:christophefund/opentofu_aws_modules.git//lambda/function"             # refers to the last commited version on the default branch
+  tags          = var.tags
+
+  # LAMBDA FUNCTION
+  function_name = "infra-enroll-new-account-w-support"            
+  handler       = "infra-enroll-new-account-w-support.create_case"                                      # file_name.function_name in the root directory of the package
+  runtime       = "python3.13"
+  filename      = "${path.module}/../../../../lambda_pkg/infra-enroll-new-account-w-support.zip"
+
+  iam_role      = module.iam_role_lambda_support_api.role_arn
+
+/*
+  environment_vars = {
+    ENV = "prod"
+  }
+  */
+}

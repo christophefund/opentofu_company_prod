@@ -81,7 +81,6 @@ output "log_group_retention_in_days" {
 #------------------------------------------------------------------------------
 # KMS Key
 #------------------------------------------------------------------------------
-
 output "kms_key_id" {
   description = "Id of the KMS Key"
   value       = module.kms_key_infra.key_id
@@ -100,4 +99,32 @@ output "kms_key_alias_name" {
 output "kms_key_alias_arn" {
   description = "Alias ARN of the KMS Key"
   value       = module.kms_key_infra.key_alias_arn
+}
+
+#------------------------------------------------------------------------------
+# Lambda Function - Enroll New AWS Accounts using Support API
+#------------------------------------------------------------------------------
+output "lambda_support_api_name" {
+  description = "The name of the Lambda function"
+  value       = module.lambda_support_api.function_name
+}
+
+output "lambda_support_api_function_arn" {
+  description = "The ARN of the Lambda function"
+  value       = module.lambda_support_api.function_arn
+}
+
+output "lambda_support_api_function_invoke_arn" {
+  description = "The Invoke ARN of the Lambda function (used for permissions or asynchronous invoking)"
+  value       = module.lambda_support_api.function_invoke_arn
+}
+
+output "lambda_support_api_function_last_modified" {
+  description = "Timestamp of when the Lambda function was last modified"
+  value       = module.lambda_support_api.last_modified
+}
+
+output "lambda_support_api_function_version" {
+  description = "Version of the Lambda function"
+  value       = module.lambda_support_api.version
 }
