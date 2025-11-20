@@ -104,7 +104,7 @@ output "kms_key_alias_arn" {
 #------------------------------------------------------------------------------
 # Lambda Function - Enroll New AWS Accounts using Support API
 #------------------------------------------------------------------------------
-output "lambda_support_api_name" {
+output "lambda_support_api_function_name" {
   description = "The name of the Lambda function"
   value       = module.lambda_support_api.function_name
 }

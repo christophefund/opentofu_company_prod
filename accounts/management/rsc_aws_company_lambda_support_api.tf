@@ -110,3 +110,34 @@ module "lambda_support_api" {
   }
   */
 }
+
+
+
+#------------------------------------------------------------------------------
+# Create an EventBridge Trigger for the Lambda function 
+# Triggers every time a new AWS Account is Created from Control Tower
+#------------------------------------------------------------------------------
+module "lambda_trigger_account_creation" {
+  # GENERAL
+  source               = "git@github.com:christophefund/opentofu_aws_modules.git//lambda/trigger_event"             # refers to the last commited version on the default branch
+  tags                 = var.tags
+
+  # EVENTBRIDGE TRIGGER
+  lambda_function_arn  = module.lambda_support_api.function_arn
+  lambda_function_name = module.lambda_support_api.function_name
+  event_pattern        = jsonencode({
+    source = [
+      "aws.cloudtrail"
+    ]
+    detail-type = [
+      "AWS API Call via CloudTrail"
+    ]
+    detail = {
+      eventSource   = ["controltower.amazonaws.com", "organizations.amazonaws.com"]
+      eventName     = ["CreateManagedAccount", "CreateAccount"]
+    }
+  })
+
+  rule_name        = "infra-event-rule-aws-account-creation-lambda"
+  rule_description = "Trigger Lambda on new AWS account creation via Control Tower"
+}
