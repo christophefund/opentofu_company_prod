@@ -1,15 +1,20 @@
 #------------------------------------------------------------------------------
 # Create a CloudWatch Log Group for our Lambda function Logs
 #------------------------------------------------------------------------------
-module "cloudwatch_logs_log_group" {
+module "cloudwatch_logs_lambda_log_group" {
   # GENERAL
   source              = "git@github.com:christophefund/opentofu_aws_modules.git//cloudwatch/logs/log_group"             # refers to the last commited version on the default branch
   /*providers = {
     aws = aws.home_region
   }*/
-  tags                = var.tags
-
-  log_group_name    = "/aws/lambda/controltower-account-support-enrollment"
+  tags = merge(
+    var.tags, {
+      Product = "LandingZone",
+      Tenant  = "Common",
+      Name    = "infra-cloudwatch-logs-lambda-log-group"
+    }
+  )
+  log_group_name    = "/aws/lambda/infra/controltower-account-support-enrollment"
   retention_in_days = 365
   kms_key_arn       = module.kms_key_infra.key_alias_arn
 }
@@ -25,10 +30,16 @@ module "iam_role_lambda_support_api" {
   /*providers = {
     aws = aws.home_region
   }*/
-  tags                = var.tags
+  tags = merge(
+    var.tags, {
+      Product = "LandingZone",
+      Tenant  = "Common",
+      Name    = "infra-lambda-support-api-readwrite"
+    }
+  )
 
   # POLICY
-  policy_name        = "lambda-support-api-readwrite-policy"
+  policy_name        = "infra-lambda-support-api-readwrite-policy"
   policy_description = "Allows Lambda functions to read/write to AWS Support API"
   
   policy_document = jsonencode({
@@ -41,7 +52,7 @@ module "iam_role_lambda_support_api" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:${module.cloudwatch_logs_log_group.log_group_id}:*"
+        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:${module.cloudwatch_logs_lambda_log_group.log_group_id}:*"
       },
       {
         Effect = "Allow"
@@ -59,12 +70,19 @@ module "iam_role_lambda_support_api" {
           "organizations:ListAccounts"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter"
+        ]
+        Resource = "arn:aws:ssm:${local.region}:${local.account_id}:parameter/infra/general/*"
       }
     ]
   })
 
   # ROLE
-  role_name        = "lambda-support-api-readwrite-role"
+  role_name        = "infra-lambda-support-api-readwrite-role"
   role_description = "Role for Lambda functions to read/write to AWS Support API"
   
   trust_policy = jsonencode({
@@ -94,11 +112,17 @@ module "iam_role_lambda_support_api" {
 module "lambda_support_api" {
   # GENERAL
   source        = "git@github.com:christophefund/opentofu_aws_modules.git//lambda/function"             # refers to the last commited version on the default branch
-  tags          = var.tags
+  tags = merge(
+    var.tags, {
+      Product = "LandingZone",
+      Tenant  = "Common",
+      Name    = "infra-enroll-new-account-w-support"
+    }
+  )
 
   # LAMBDA FUNCTION
   function_name = "infra-enroll-new-account-w-support"            
-  handler       = "infra-enroll-new-account-w-support.create_case"                                      # file_name.function_name in the root directory of the package
+  handler       = "infra-enroll-new-account-w-support.lambda_handler"                                      # file_name.function_name in the root directory of the package
   runtime       = "python3.13"
   filename      = "${path.module}/../../../../lambda_pkg/infra-enroll-new-account-w-support.zip"
 
@@ -120,7 +144,14 @@ module "lambda_support_api" {
 module "lambda_trigger_account_creation" {
   # GENERAL
   source               = "git@github.com:christophefund/opentofu_aws_modules.git//lambda/trigger_event"             # refers to the last commited version on the default branch
-  tags                 = var.tags
+  tags = merge(
+    var.tags, {
+      Product = "LandingZone",
+      Tenant  = "Common",
+      Name    = "infra-event-rule-aws-account-creation-lambda"
+    }
+  )
+
 
   # EVENTBRIDGE TRIGGER
   lambda_function_arn  = module.lambda_support_api.function_arn

@@ -60,22 +60,22 @@ output "role_unique_id" {
 #------------------------------------------------------------------------------
 output "log_group_name" {
   description = "Name of the CloudWatch Log Group"
-  value       = module.cloudwatch_logs_log_group.log_group_name
+  value       = module.cloudwatch_logs_lambda_log_group.log_group_name
 }
 
 output "log_group_arn" {
   description = "ARN of the CloudWatch Log Group"
-  value       = module.cloudwatch_logs_log_group.log_group_arn
+  value       = module.cloudwatch_logs_lambda_log_group.log_group_arn
 }
 
 output "log_group_id" {
   description = "ID of the CloudWatch Log Group"
-  value       = module.cloudwatch_logs_log_group.log_group_id
+  value       = module.cloudwatch_logs_lambda_log_group.log_group_id
 }
 
 output "log_group_retention_in_days" {
   description = "Retention period in days"
-  value       = module.cloudwatch_logs_log_group.retention_in_days
+  value       = module.cloudwatch_logs_lambda_log_group.retention_in_days
 }
 
 #------------------------------------------------------------------------------

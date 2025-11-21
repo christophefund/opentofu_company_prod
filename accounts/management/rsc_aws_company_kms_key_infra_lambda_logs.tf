@@ -8,7 +8,7 @@ module "kms_key_infra" {
   
   tags = merge(
     var.tags, {
-      Product = "Composable",
+      Product = "LandingZone",
       Tenant  = "Common",
       Name    = "infra-lambda-logs-key"
     }
@@ -50,7 +50,7 @@ module "kms_key_infra" {
         Resource = "*"
         Condition = {
           ArnLike = {
-            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:*:${local.account_id}:log-group:/aws/lambda/*" # Doesn't specify an AWS Region, allows CloudWatch to use this key from all regions for any Lamdba function running in any region
+            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:*:${local.account_id}:log-group:/aws/lambda/infra/*" # Doesn't specify an AWS Region, allows CloudWatch to use this key from all regions for any Lamdba function running in any region
           }
         }
       }
