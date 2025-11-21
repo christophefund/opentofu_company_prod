@@ -128,3 +128,19 @@ output "lambda_support_api_function_version" {
   description = "Version of the Lambda function"
   value       = module.lambda_support_api.version
 }
+
+
+#------------------------------------------------------------------------------
+# Lambda Function - Enroll New AWS Accounts using Support API
+#------------------------------------------------------------------------------
+output "ssm_param_infra_home_region_name" {
+  value = module.ssm_param_infra.ssm_param_name
+}
+
+output "ssm_param_infra_home_region_arn" {
+  value = module.ssm_param_infra.ssm_param_arn
+}
+
+output "ssm_param_infra_home_region_version" {
+  value = module.ssm_param_infra.ssm_param_version
+}
