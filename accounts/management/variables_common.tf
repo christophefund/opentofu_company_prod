@@ -3,8 +3,9 @@
 # Resource Tags
 #------------------------------------------------------------------------------
 variable "tags" {
-  description = "Tags to set for all resources"
   type        = map(string)
+  description = "Tags to set for all resources"
+
   default = {
     Terraform   = "true"
     Application = "my_demo_application",
@@ -14,10 +15,9 @@ variable "tags" {
 }
 
 variable "aws_home_region" {
-  description = "AWS Landing Zone Home Region"
   type        = string
-  default     = "us-east-1"
-  #default     = "eu-central-1"
+  description = "AWS Landing Zone Home Region"
+  default     = "us-east-1" # "eu-central-1"
 }
 
 #------------------------------------------------------------------------------
@@ -27,25 +27,7 @@ variable "aws_home_region" {
 #             finance-prod-vpc, analytics-staging-lambda-dataIngest  
 #------------------------------------------------------------------------------
 variable "env_prefix" {
-  description = "Environment Abbreviation Prefix"
   type        = string
+  description = "Environment Abbreviation Prefix"
   default     = "env_xyz"
 }
-
-
-
-
-
-#------------------------------------------------------------------------------
-# S3 Bucket
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-# KMS Key
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-# DynamoDB Table
-#------------------------------------------------------------------------------
